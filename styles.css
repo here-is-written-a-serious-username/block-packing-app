@@ -1,0 +1,19 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: rgba(115, 115, 143, 0.514);
+}
+
+#container {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    outline: 1px solid rgb(223, 108, 108);
+}
+
+.block {
+    position: absolute;
+    border: 1px solid #000;
+}
