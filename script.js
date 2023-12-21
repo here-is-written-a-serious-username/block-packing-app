@@ -1,76 +1,16 @@
-const boxes = [
-    { w: 50, h: 400 },
-    { w: 80, h: 60 },
-    { w: 40, h: 120 },
-    { w: 60, h: 80 },
-    { w: 100, h: 50 },
-    { w: 55, h: 105 },
-    { w: 75, h: 55 },
-    { w: 45, h: 110 },
-    { w: 65, h: 85 },
-    { w: 95, h: 45 },
-    { w: 50, h: 100 },
-    { w: 80, h: 60 },
-    { w: 40, h: 120 },
-    { w: 60, h: 80 },
-    { w: 100, h: 50 },
-    { w: 55, h: 105 },
-    { w: 75, h: 55 },
-    { w: 45, h: 110 },
-    { w: 65, h: 85 },
-    { w: 95, h: 45 },
-    { w: 50, h: 100 },
-    { w: 80, h: 60 },
-    { w: 40, h: 120 },
-    { w: 60, h: 80 },
-    { w: 100, h: 50 },
-    { w: 55, h: 105 },
-    { w: 75, h: 55 },
-    { w: 45, h: 110 },
-    { w: 65, h: 85 },
-    { w: 95, h: 45 },
-    { w: 50, h: 100 },
-    { w: 80, h: 60 },
-    { w: 40, h: 120 },
-    { w: 60, h: 80 },
-    { w: 100, h: 50 },
-    { w: 55, h: 105 },
-    { w: 75, h: 55 },
-    { w: 45, h: 110 },
-    { w: 65, h: 85 },
-    { w: 95, h: 45 },
-    { w: 50, h: 100 },
-    { w: 80, h: 60 },
-    { w: 40, h: 120 },
-    { w: 60, h: 80 },
-    { w: 100, h: 50 },
-    { w: 55, h: 105 },
-    { w: 75, h: 55 },
-    { w: 45, h: 110 },
-    { w: 65, h: 85 },
-    { w: 95, h: 45 },
-    { w: 50, h: 100 },
-    { w: 80, h: 60 },
-    { w: 40, h: 120 },
-    { w: 60, h: 80 },
-    { w: 100, h: 50 },
-    { w: 55, h: 105 },
-    { w: 75, h: 55 },
-    { w: 45, h: 110 },
-    { w: 65, h: 85 },
-    { w: 95, h: 45 },
-    { w: 55, h: 105 },
-    { w: 75, h: 55 },
-    { w: 45, h: 110 },
-    { w: 65, h: 85 },
-    { w: 95, h: 45 },
-];
 
-const contSize = { w: 600, h: 600 };
 
 const container = document.getElementById('container');
+const button = document.getElementById('button');
 
-function aaa(boxes) {
+const boxes = await fetch('./data/blockParameters.json').then((response) => response.json()).catch(error => console.error('Failed to load JSON:', error));
+const contSize = { w: 600, h: 600 };
+
+button.addEventListener('click', () => packRectangles(boxes));
+
+
+
+function packRectangles(boxes) {
 
     boxes.sort((a, b) => b.h - a.h);
 
@@ -132,11 +72,11 @@ function aaa(boxes) {
         packed: packed.length,
         notPacked: notPacked.length,
     })
-    bbb(packed);
+    renderBlocks(packed);
 };
 
 
-function bbb(packed) {
+function renderBlocks(packed) {
 
     for (let pack of packed) {
         const blockElement = document.createElement('div');
@@ -149,5 +89,3 @@ function bbb(packed) {
     }
 
 };
-
-aaa(boxes);
