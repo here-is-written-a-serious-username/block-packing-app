@@ -2,12 +2,38 @@
 
 const container = document.getElementById('container');
 const button = document.getElementById('button');
+const outputEl = document.getElementById('textContentOutput');
 
-const boxes = await fetch('./data/blockParameters.json').then((response) => response.json()).catch(error => console.error('Failed to load JSON:', error));
+const boxesData = await fetch('./data/blockParameters.json').then((response) => response.json()).catch(error => console.error('Failed to load JSON:', error));
 const contSize = { w: 600, h: 600 };
+let boxes = [];
 
 button.addEventListener('click', () => packRectangles(boxes));
 
+
+(function addingDataToArray(boxesData) {
+
+    const colorMap = new Map();
+
+    boxes = boxesData.map((box, initialOrder) => {
+        const key = `${box.w}-${box.h}`;
+        const keyRevers = `${box.h}-${box.w}`;
+        let color;
+        const uniqueColorArray = Array.from(colorMap.values());
+
+        if (colorMap.has(key) || colorMap.has(keyRevers)) {
+            // Якщо колір вже існує для даного розміру, використовуємо його
+            color = colorMap.get(key);
+        } else {
+            // Якщо колір ще не існує для даного розміру, генеруємо новий унікальний
+            color = generateUniqueColor(uniqueColorArray);
+            colorMap.set(key, color);
+            colorMap.set(keyRevers, color);
+        }
+
+        return { ...box, initialOrder, color };
+    });
+})(boxesData);
 
 
 function packRectangles(boxes) {
@@ -60,27 +86,32 @@ function packRectangles(boxes) {
         }
 
         if (!placed) {
-            // Блок не розміщений в контейнері
             notPacked.push(box);
             // console.log('Block not packed:', box);
         }
     }
 
-    // console.log({ packed, spaces, notPacked });
+    console.log({ packed, spaces, notPacked });
     console.log({
         total: boxes.length,
         packed: packed.length,
         notPacked: notPacked.length,
     })
+    outputEl.textContent =
+        `Total: ${boxes.length} boxes;
+        packed:${packed.length};
+        notPacked: ${notPacked.length}.`;
+
     renderBlocks(packed);
 };
-
 
 function renderBlocks(packed) {
 
     for (let pack of packed) {
         const blockElement = document.createElement('div');
         blockElement.className = 'block';
+        blockElement.textContent = pack.initialOrder;
+        blockElement.style.background = pack.color;
         blockElement.style.width = pack.w + 'px';
         blockElement.style.height = pack.h + 'px';
         blockElement.style.left = pack.x + 'px';
@@ -88,4 +119,16 @@ function renderBlocks(packed) {
         container.appendChild(blockElement);
     }
 
+};
+
+function getRandomHexColor() {
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+}
+
+function generateUniqueColor(uniqueColorArray) {
+    let newColor;
+    do {
+        newColor = getRandomHexColor();
+    } while (uniqueColorArray.includes(newColor));
+    return newColor;
 };
