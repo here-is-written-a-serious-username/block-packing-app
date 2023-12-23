@@ -80,13 +80,13 @@ function packRectangles(boxes) {
 
         if (!placed) {
             notPacked.push(box);
-            // console.log('Block not packed:', box);
         }
     }
 
     console.log({ packed, spaces, notPacked });
 
-
+    const result = transformObjectForOutputResult(packed);
+    console.log(result);
 
     outputEl.textContent =
         `Total: ${boxes.length} boxes;
@@ -173,3 +173,24 @@ function debounce(func, delay) {
         }, delay);
     };
 };
+
+function transformObjectForOutputResult(inputObject) {
+
+    const blockCoordinates = inputObject.map((inObject) => {
+        const { x, y, width, height, initialOrder } = inObject;
+
+        return {
+            top: y,
+            left: x,
+            right: x + width,
+            bottom: y + height,
+            initialOrder,
+        };
+    });
+    const resultArray = {
+        fullness: "for today it is `null`",
+        blockCoordinates,
+    };
+
+    return resultArray;
+}
