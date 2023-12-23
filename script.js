@@ -1,10 +1,10 @@
 const container = document.getElementById('container');
 const button = document.getElementById('button');
 const outputEl = document.getElementById('textContentOutput');
-
 const boxesData = await fetch('./data/blockParameters.json').then((response) => response.json()).catch(error => console.error('Failed to load JSON:', error));
 
 let boxes = [];
+let invalidBoxes = [];
 let contSize = {
     width: 0,
     height: 0,
@@ -15,17 +15,33 @@ const debouncedPackRectangles = debounce(() => packRectangles(boxes), 300);
 window.addEventListener('resize', debouncedPackRectangles);
 
 
-(function addingInitialOrder(boxesData) {
-
-    boxes = boxesData.map((box, initialOrder) => {
-
+(function validateInputData(boxesData) {
+    let boxesWithinitialOrder = boxesData.map((box, initialOrder) => {
         return { ...box, initialOrder };
     });
+
+    boxesWithinitialOrder.forEach((box) => {
+        if (
+            typeof box === 'object' &&
+            box.hasOwnProperty('width') &&
+            box.hasOwnProperty('height') &&
+            typeof box.width === 'number' &&
+            typeof box.height === 'number' &&
+            box.width >= 0 &&
+            box.height >= 0
+        ) {
+            boxes.push(box);
+        } else {
+            invalidBoxes.push(box);
+        }
+        return boxes, invalidBoxes;
+    });
+    console.log('Valid Boxes:', boxes);
+    console.log('Invalid Boxes:', invalidBoxes);
 })(boxesData);
 
 
 function packRectangles(boxes) {
-
     contSize = {
         width: window.innerWidth * 0.95,
         height: window.innerHeight * 0.9,
@@ -73,11 +89,9 @@ function packRectangles(boxes) {
                 space.y += box.height;
                 space.height -= box.height;
             }
-
             placed = true;
             break;
         }
-
         if (!placed) {
             notPacked.push(box);
         }
@@ -98,9 +112,7 @@ function packRectangles(boxes) {
 };
 
 function renderBlocks(packed) {
-
     container.innerHTML = '';
-
     addingColor(packed);
 
     for (let pack of packed) {
@@ -118,7 +130,6 @@ function renderBlocks(packed) {
         blockElement.appendChild(paragraphElement);
         container.appendChild(blockElement);
     }
-
 };
 
 function turnAndSort(boxes) {
@@ -157,14 +168,12 @@ function addingColor(packed) {
             color = generateUniqueColor(uniqueColorArray);
             colorMap.set(key, color);
         }
-
         pack.color = color;
     });
 };
 
 function debounce(func, delay) {
     let timeoutId;
-
     return function (...args) {
         clearTimeout(timeoutId);
 
@@ -175,10 +184,8 @@ function debounce(func, delay) {
 };
 
 function transformObjectForOutputResult(inputObject) {
-
     const blockCoordinates = inputObject.map((inObject) => {
         const { x, y, width, height, initialOrder } = inObject;
-
         return {
             top: y,
             left: x,
@@ -191,6 +198,5 @@ function transformObjectForOutputResult(inputObject) {
         fullness: "for today it is `null`",
         blockCoordinates,
     };
-
     return resultArray;
 }
