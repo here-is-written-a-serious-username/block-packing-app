@@ -14,7 +14,6 @@ button.addEventListener('click', () => packRectangles(boxes));
 const debouncedPackRectangles = debounce(() => packRectangles(boxes), 300);
 window.addEventListener('resize', debouncedPackRectangles);
 
-
 (function validateInputData(boxesData) {
     let boxesWithinitialOrder = boxesData.map((box, initialOrder) => {
         return { ...box, initialOrder };
@@ -40,7 +39,6 @@ window.addEventListener('resize', debouncedPackRectangles);
     console.log('Invalid Boxes:', invalidBoxes);
 })(boxesData);
 
-
 function packRectangles(boxes) {
     contSize = {
         width: window.innerWidth * 0.95,
@@ -64,22 +62,15 @@ function packRectangles(boxes) {
             packed.push(Object.assign({}, box, { x: space.x, y: space.y }));
 
             if (box.width === space.width && box.height === space.height) {
-
                 const last = spaces.pop();
                 if (i < spaces.length) spaces[i] = last;
-
             } else if (box.height === space.height) {
-
                 space.x += box.width;
                 space.width -= box.width;
-
             } else if (box.width === space.width) {
-
                 space.y += box.height;
                 space.height -= box.height;
-
             } else {
-
                 spaces.push({
                     x: space.x + box.width,
                     y: space.y,
@@ -96,8 +87,7 @@ function packRectangles(boxes) {
             notPacked.push(box);
         }
     }
-
-    console.log({ packed, spaces, notPacked });
+    console.log({ packed, notPacked, spaces });
 
     const result = transformObjectForOutputResult(packed);
     console.log(result);
@@ -195,6 +185,7 @@ function transformObjectForOutputResult(inputObject) {
         };
     });
     const totalBoxesArea = calculationTotalRectangleArea(inputObject);
+
     const resultArray = {
         fullness: "totalBoxesArea = " + totalBoxesArea + " px^2",
         blockCoordinates,

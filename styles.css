@@ -6,12 +6,71 @@ body {
     background: rgba(115, 115, 143, 0.514);
 }
 
+h1 {
+    text-align: center;
+    margin-bottom: 4vh;
+}
+
+.cont-links {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+a,
+#button {
+    border: 1px solid rgb(77, 68, 68);
+    border-radius: 5px;
+    padding: 5px 15px;
+}
+
+a {
+    text-decoration: none;
+    font-size: 20px;
+    color: #000;
+    background-color: rgb(222, 222, 222);
+}
+
+a:hover,
+a:focus {
+    background-color: rgb(200, 200, 200);
+}
+
+a:active {
+    background-color: rgb(180, 180, 180);
+}
+
+#button {
+    font-size: 18px;
+    margin-left: 2vh;
+    margin-right: 4vh;
+    cursor: pointer;
+    background-color: rgb(144, 238, 144);
+}
+
+#button:hover,
+#button:focus {
+    background-color: rgb(114, 200, 114);
+}
+
+#button:active {
+    background-color: rgb(114, 180, 114);
+}
+
 .wrap {
     display: flex;
     align-items: center;
     height: 5vh;
     margin-left: 5vh;
     margin-bottom: 1vh;
+}
+
+#bin {
+    margin-left: auto;
+    margin-right: auto;
+    width: 95vw;
+    height: 90vh;
+    outline: 2px solid rgb(223, 108, 108);
 }
 
 #container {
@@ -42,13 +101,6 @@ body {
 .block {
     position: absolute;
     border: 1px solid #000;
-}
-
-#button {
-    font-size: 18px;
-    padding: 5px 15px;
-    margin-right: 5vh;
-    cursor: pointer;
 }
 
 #textContentOutput {
