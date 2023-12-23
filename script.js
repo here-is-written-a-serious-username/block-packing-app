@@ -1,5 +1,3 @@
-
-
 const container = document.getElementById('container');
 const button = document.getElementById('button');
 const outputEl = document.getElementById('textContentOutput');
@@ -7,40 +5,31 @@ const outputEl = document.getElementById('textContentOutput');
 const boxesData = await fetch('./data/blockParameters.json').then((response) => response.json()).catch(error => console.error('Failed to load JSON:', error));
 
 let boxes = [];
-const contSize = {
-    width: window.innerWidth * 0.95,
-    height: window.innerHeight * 0.9,
+let contSize = {
+    width: 0,
+    height: 0,
 };
 
 button.addEventListener('click', () => packRectangles(boxes));
+const debouncedPackRectangles = debounce(() => packRectangles(boxes), 300);
+window.addEventListener('resize', debouncedPackRectangles);
 
 
-(function addingDataToArray(boxesData) {
-
-    const colorMap = new Map();
+(function addingInitialOrder(boxesData) {
 
     boxes = boxesData.map((box, initialOrder) => {
-        const key = `${box.width}-${box.height}`;
-        const keyRevers = `${box.height}-${box.width}`;
-        let color;
-        const uniqueColorArray = Array.from(colorMap.values());
 
-        if (colorMap.has(key) || colorMap.has(keyRevers)) {
-            // Якщо колір вже існує для даного розміру, використовуємо його
-            color = colorMap.get(key);
-        } else {
-            // Якщо колір ще не існує для даного розміру, генеруємо новий унікальний
-            color = generateUniqueColor(uniqueColorArray);
-            colorMap.set(key, color);
-            colorMap.set(keyRevers, color);
-        }
-
-        return { ...box, initialOrder, color };
+        return { ...box, initialOrder };
     });
 })(boxesData);
 
 
 function packRectangles(boxes) {
+
+    contSize = {
+        width: window.innerWidth * 0.95,
+        height: window.innerHeight * 0.9,
+    };
 
     turnAndSort(boxes);
 
@@ -96,11 +85,9 @@ function packRectangles(boxes) {
     }
 
     console.log({ packed, spaces, notPacked });
-    // console.log({
-    //     total: boxes.length,
-    //     packed: packed.length,
-    //     notPacked: notPacked.length,
-    // });
+
+
+
     outputEl.textContent =
         `Total: ${boxes.length} boxes;
         packed:${packed.length};
@@ -111,6 +98,10 @@ function packRectangles(boxes) {
 };
 
 function renderBlocks(packed) {
+
+    container.innerHTML = '';
+
+    addingColor(packed);
 
     for (let pack of packed) {
         const blockElement = document.createElement('div');
@@ -150,4 +141,35 @@ function generateUniqueColor(uniqueColorArray) {
         newColor = getRandomHexColor();
     } while (uniqueColorArray.includes(newColor));
     return newColor;
+};
+
+function addingColor(packed) {
+    const colorMap = new Map();
+
+    packed.forEach((pack) => {
+        const key = `${pack.width}-${pack.height}`;
+        let color;
+        const uniqueColorArray = Array.from(colorMap.values());
+
+        if (colorMap.has(key)) {
+            color = colorMap.get(key);
+        } else {
+            color = generateUniqueColor(uniqueColorArray);
+            colorMap.set(key, color);
+        }
+
+        pack.color = color;
+    });
+};
+
+function debounce(func, delay) {
+    let timeoutId;
+
+    return function (...args) {
+        clearTimeout(timeoutId);
+
+        timeoutId = setTimeout(() => {
+            func(...args);
+        }, delay);
+    };
 };
