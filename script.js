@@ -140,11 +140,11 @@ function turnAndSort(boxes) {
         return box;
     });
     boxes.sort((a, b) => b.height - a.height);
-}
+};
 
 function getRandomHexColor() {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-}
+};
 
 function generateUniqueColor(uniqueColorArray) {
     let newColor;
@@ -194,9 +194,18 @@ function transformObjectForOutputResult(inputObject) {
             initialOrder,
         };
     });
+    const totalBoxesArea = calculationTotalRectangleArea(inputObject);
     const resultArray = {
-        fullness: "for today it is `null`",
+        fullness: "totalBoxesArea = " + totalBoxesArea + " px^2",
         blockCoordinates,
     };
     return resultArray;
+};
+
+function calculationTotalRectangleArea(rectangles) {
+    const totalArea = rectangles.reduce((sum, rectangle) => {
+        const area = rectangle.width * rectangle.height;
+        return sum + area;
+    }, 0);
+    return totalArea;
 }
